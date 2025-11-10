@@ -10,7 +10,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.Material3.Dark.NoActionBar">
+        <activity
+            android:name=".view.NoteEditorActivity"
+            android:exported="false" />
         <activity
             android:name=".view.MainActivity"
             android:exported="true">

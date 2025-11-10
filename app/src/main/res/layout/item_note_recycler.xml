@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
     tool:layout_margin="30dp"
     tool:background="#3C3D37"
-    android:padding="10dp">
+    android:paddingTop="10dp">
     <TextView
         android:id="@+id/tvNoteRecyclerTitle"
         android:layout_width="wrap_content"
@@ -14,9 +14,11 @@
         android:text="INAZUMA ELEVEN"
         android:textSize="15sp"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/white"
+        android:textColor="#EBEBEB"
+        android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingLeft="10dp"/>
 
     <TextView
         android:id="@+id/tvNoteRecyclerDate"
@@ -27,16 +29,30 @@
         app:layout_constraintBottom_toBottomOf="@id/tvNoteRecyclerTitle"
         app:layout_constraintEnd_toEndOf="parent"
         android:textStyle="italic"
-        android:fontFamily="sans-serif-medium"/>
+        android:fontFamily="sans-serif-medium"
+        android:paddingRight="10dp"/>
 
     <TextView
         android:id="@+id/tvNoteRecyclerDescr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tool:text="Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem..."
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNoteRecyclerTitle"
+        app:layout_constraintBottom_toTopOf="@id/vSepNotes"
         app:layout_constraintStart_toStartOf="parent"
         android:textColor="#EBEBEB"
-        android:fontFamily="sans-serif" />
+        android:fontFamily="sans-serif"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
+
+    <View
+        android:id="@+id/vSepNotes"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#EBEBEB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

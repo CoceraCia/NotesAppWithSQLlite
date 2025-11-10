@@ -1,5 +1,6 @@
 package com.coceracia.sqlnotes.view.adapter
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ class NoteAdapter(private val listNotes: List<Note>): RecyclerView.Adapter<NoteA
         val title = itemView.findViewById<TextView>(R.id.tvNoteRecyclerTitle)
         val date = itemView.findViewById<TextView>(R.id.tvNoteRecyclerDate)
         val description = itemView.findViewById<TextView>(R.id.tvNoteRecyclerDescr)
+        val sep = itemView.findViewById<View>(R.id.vSepNotes)
     }
 
     override fun onCreateViewHolder(
@@ -29,6 +31,9 @@ class NoteAdapter(private val listNotes: List<Note>): RecyclerView.Adapter<NoteA
         holder.date.text = note.date
         val description = note.content.substring(0,60) + "..."
         holder.description.text = description
+        if (position == listNotes.size - 1){
+            holder.sep.setBackgroundColor(Color.TRANSPARENT)
+        }
     }
 
     override fun getItemCount(): Int {
