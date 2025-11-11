@@ -1,5 +1,6 @@
 package com.coceracia.sqlnotes.view.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.coceracia.sqlnotes.R
 import com.coceracia.sqlnotes.model.Note
 
-class NoteAdapter(private val listNotes: List<Note>): RecyclerView.Adapter<NoteAdapter.noteViewHolder>() {
-    class noteViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class NoteAdapter(
+    private val listNotes: List<Note>,
+    private val onClick: (Note) -> Unit
+): RecyclerView.Adapter<NoteAdapter.noteViewHolder>() {
+    class noteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById<TextView>(R.id.tvNoteRecyclerTitle)
         val date = itemView.findViewById<TextView>(R.id.tvNoteRecyclerDate)
         val description = itemView.findViewById<TextView>(R.id.tvNoteRecyclerDescr)
@@ -21,18 +25,34 @@ class NoteAdapter(private val listNotes: List<Note>): RecyclerView.Adapter<NoteA
         parent: ViewGroup,
         viewType: Int
     ): NoteAdapter.noteViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_note_recycler, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_note_recycler, parent, false)
         return noteViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: NoteAdapter.noteViewHolder, position: Int) {
         val note = listNotes[position]
-        holder.title.text = note.title.uppercase()
+        if (note.title.trim() == "") {
+            holder.title.text = "NEW NOTE"
+        } else {
+            holder.title.text = note.title.uppercase()
+        }
+
         holder.date.text = note.date
-        val description = note.content.substring(0,60) + "..."
-        holder.description.text = description
-        if (position == listNotes.size - 1){
+        if (note.content.trim() == "") {
+            holder.description.text = "Your text"
+        } else if (note.content.length > 60) {
+            holder.description.text = note.content.substring(0, 60) + "..."
+        } else {
+            holder.description.text = note.content
+        }
+        if (position == listNotes.size - 1) {
             holder.sep.setBackgroundColor(Color.TRANSPARENT)
+        }
+
+        holder.itemView.setOnClickListener {
+            onClick(note)
         }
     }
 

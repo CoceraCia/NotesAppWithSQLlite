@@ -1,7 +1,12 @@
 package com.coceracia.sqlnotes.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Note (
-    val title: String,
-    val date: String,
-    val content: String
-)
+    var title: String,
+    var date: String,
+    var content: String,
+    val id: Long = System.currentTimeMillis()
+): Parcelable

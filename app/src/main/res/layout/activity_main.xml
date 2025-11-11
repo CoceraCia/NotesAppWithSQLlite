@@ -16,7 +16,7 @@
         android:text="MONDAY"
         android:fontFamily="sans-serif-condensed-medium"
         android:textSize="55sp"
-        android:textColor="#D6D5A8"
+        android:textColor="#FFC50F"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="#D6D5A8"
+                android:background="#FFC50F"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/viewRecyclerSeparation"/>
             <TextView
@@ -50,14 +50,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="@id/ibAdd"
                 android:text="YOUR NOTES"
-                android:textSize="20sp"
+                android:textSize="26sp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:textStyle="italic"
-                android:textColor="@color/white"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:shadowRadius="8"
-                android:shadowColor="@color/black"/>
+                android:textColor="@color/black"
+                android:fontFamily="sans-serif-condensed-medium"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ibAdd"
@@ -105,7 +103,7 @@
         android:layout_height="wrap_content"
         android:text="EVERYDAY IS A NEW DAY"
         android:textStyle="italic"
-        android:textColor="#D6D5A8"
+        android:textColor="#FFC50F"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
