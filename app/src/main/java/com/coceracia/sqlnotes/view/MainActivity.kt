@@ -2,6 +2,7 @@ package com.coceracia.sqlnotes.view
 
 import android.R.attr.onClick
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -86,6 +88,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, NoteEditorActivity::class.java)
             intent.putExtra("NOTE", n)
             noteEditorLauncher.launch(intent)
+        }, onLongClick = {n->
+            AlertDialog.Builder(this).setTitle(("DELETE")).setMessage("Are you sure that do you want to delete this Note?").show()
         })
     }
 

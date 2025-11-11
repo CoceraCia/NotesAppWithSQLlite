@@ -12,7 +12,8 @@ import com.coceracia.sqlnotes.model.Note
 
 class NoteAdapter(
     private val listNotes: List<Note>,
-    private val onClick: (Note) -> Unit
+    private val onClick: (Note) -> Unit,
+    private val onLongClick: (Note) -> Unit
 ): RecyclerView.Adapter<NoteAdapter.noteViewHolder>() {
     class noteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title = itemView.findViewById<TextView>(R.id.tvNoteRecyclerTitle)
@@ -42,17 +43,25 @@ class NoteAdapter(
         holder.date.text = note.date
         if (note.content.trim() == "") {
             holder.description.text = "Your text"
-        } else if (note.content.length > 60) {
+        } else if (note.content.trim().lines().size >= 2) {
+            val notes = note.content.trim().lines().take(2)
+            holder.description.text = notes[0] + notes[1] + "..."
+        } else if(note.content.length > 60){
             holder.description.text = note.content.substring(0, 60) + "..."
         } else {
             holder.description.text = note.content
         }
+
         if (position == listNotes.size - 1) {
             holder.sep.setBackgroundColor(Color.TRANSPARENT)
         }
 
         holder.itemView.setOnClickListener {
             onClick(note)
+        }
+        holder.itemView.setOnLongClickListener{
+            onLongClick(note)
+            true
         }
     }
 
