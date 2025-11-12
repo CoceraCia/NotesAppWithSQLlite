@@ -4,33 +4,37 @@ import android.R.attr.onClick
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.coceracia.sqlnotes.R
 import com.coceracia.sqlnotes.model.Note
 import com.coceracia.sqlnotes.view.adapter.NoteAdapter
+import com.coceracia.sqlnotes.viewmodel.MainActivityViewModel
 import com.google.android.material.button.MaterialButton
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import kotlin.collections.listOf
 
 class MainActivity : AppCompatActivity() {
-    private var listNotes = mutableListOf<Note>()
+    private val mViewModel : MainActivityViewModel by viewModels()
 
     private val noteEditorLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -45,12 +49,12 @@ class MainActivity : AppCompatActivity() {
             Log.d("NoteNotExists", "loaded")
 
             if (note != null){
-                if (!noteExists(note)){
+                if (!mViewModel.noteExists(note)){
                     Log.d("Not Exists", note.toString())
-                    listNotes.add(note)
+                    mViewModel.listNotes.add(note)
                 } else {
                     Log.d("Exists", note.toString())
-                    updateValues(note)
+                    mViewModel.updateValues(note)
                 }
             } else {
                 Log.d("Null", note.toString())
@@ -84,12 +88,26 @@ class MainActivity : AppCompatActivity() {
     fun showNotes() {
         val recyclerView = findViewById<RecyclerView>(R.id.rvNotesRecycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = NoteAdapter(listNotes, onClick = { n ->
+        recyclerView.adapter = NoteAdapter(mViewModel.listNotes, onClick = { n ->
             val intent = Intent(this, NoteEditorActivity::class.java)
             intent.putExtra("NOTE", n)
             noteEditorLauncher.launch(intent)
         }, onLongClick = {n->
-            AlertDialog.Builder(this).setTitle(("DELETE")).setMessage("Are you sure that do you want to delete this Note?").show()
+            val dialogView = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
+
+            val builder = AlertDialog.Builder(this)
+            builder.setView(dialogView)
+            val alertDialog = builder.create()
+
+            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            alertDialog.show()
+
+            val bttnDelete = dialogView.findViewById<MaterialButton>(R.id.mbButtonDelete)
+            bttnDelete.setOnClickListener {
+                mViewModel.delete(n)
+                showNotes()
+                alertDialog.dismiss()
+            }
         })
     }
 
@@ -97,19 +115,5 @@ class MainActivity : AppCompatActivity() {
     fun showDay() {
         val dateTxt = findViewById<TextView>(R.id.tvTitle)
         dateTxt.text = LocalDateTime.now().dayOfWeek.toString()
-    }
-
-    fun noteExists(note: Note): Boolean {
-        return !listNotes.all { it.id != note.id}
-    }
-
-    fun updateValues(note:Note){
-        listNotes.forEach {
-            if (it.id == note.id){
-                it.title = note.title
-                it.date = note.date
-                it.content = note.content
-            }
-        }
     }
 }

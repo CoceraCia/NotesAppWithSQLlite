@@ -33,7 +33,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="20dp"
-        app:cardBackgroundColor="#3C3D37">
+        app:cardBackgroundColor="#1E201E">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
