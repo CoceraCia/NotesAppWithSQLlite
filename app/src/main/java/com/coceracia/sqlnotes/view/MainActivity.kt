@@ -24,6 +24,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.coceracia.sqlnotes.R
@@ -31,11 +32,11 @@ import com.coceracia.sqlnotes.model.Note
 import com.coceracia.sqlnotes.view.adapter.NoteAdapter
 import com.coceracia.sqlnotes.viewmodel.MainActivityViewModel
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
     private val mViewModel : MainActivityViewModel by viewModels()
-
     private val noteEditorLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { r ->
@@ -46,20 +47,17 @@ class MainActivity : AppCompatActivity() {
                 @Suppress("DEPRECATION")
                 r.data?.getParcelableExtra<Note>("NOTE")
             }
-            Log.d("NoteNotExists", "loaded")
 
             if (note != null){
-                if (!mViewModel.noteExists(note)){
-                    Log.d("Not Exists", note.toString())
-                    mViewModel.listNotes.add(note)
-                } else {
-                    Log.d("Exists", note.toString())
-                    mViewModel.updateValues(note)
+                lifecycleScope.launch {
+                    if (!mViewModel.noteExists(note.id)){
+                        mViewModel.insert(note)
+                    } else {
+                        mViewModel.update(note)
+                    }
                 }
-            } else {
-                Log.d("Null", note.toString())
             }
-            showNotes()
+
         }
     }
 
@@ -75,7 +73,6 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         showDay()
-        showNotes()
 
 
         val bttnAdd = findViewById<MaterialButton>(R.id.ibAdd)
@@ -83,31 +80,24 @@ class MainActivity : AppCompatActivity() {
             val intentNoteEditor = Intent(this, NoteEditorActivity::class.java)
             noteEditorLauncher.launch(intentNoteEditor)
         }
+
+        mViewModel.allNotes.observe(this) {notes ->
+            notes.forEach {
+                Log.d("Note", it.toString())
+            }
+            showContent(notes)
+        }
     }
 
-    fun showNotes() {
+    fun showContent(list : List<Note>) {
         val recyclerView = findViewById<RecyclerView>(R.id.rvNotesRecycler)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = NoteAdapter(mViewModel.listNotes, onClick = { n ->
+        recyclerView.adapter = NoteAdapter(list, onClick = { n ->
             val intent = Intent(this, NoteEditorActivity::class.java)
             intent.putExtra("NOTE", n)
             noteEditorLauncher.launch(intent)
         }, onLongClick = {n->
-            val dialogView = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
-
-            val builder = AlertDialog.Builder(this)
-            builder.setView(dialogView)
-            val alertDialog = builder.create()
-
-            alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            alertDialog.show()
-
-            val bttnDelete = dialogView.findViewById<MaterialButton>(R.id.mbButtonDelete)
-            bttnDelete.setOnClickListener {
-                mViewModel.delete(n)
-                showNotes()
-                alertDialog.dismiss()
-            }
+            showDeleteDialog(n)
         })
     }
 
@@ -115,5 +105,22 @@ class MainActivity : AppCompatActivity() {
     fun showDay() {
         val dateTxt = findViewById<TextView>(R.id.tvTitle)
         dateTxt.text = LocalDateTime.now().dayOfWeek.toString()
+    }
+
+    fun showDeleteDialog(note:Note){
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
+
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+        val alertDialog = builder.create()
+
+        alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        alertDialog.show()
+
+        val bttnDelete = dialogView.findViewById<MaterialButton>(R.id.mbButtonDelete)
+        bttnDelete.setOnClickListener {
+            mViewModel.delete(note)
+            alertDialog.dismiss()
+        }
     }
 }

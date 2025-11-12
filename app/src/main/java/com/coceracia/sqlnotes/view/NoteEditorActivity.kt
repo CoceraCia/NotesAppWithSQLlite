@@ -67,6 +67,7 @@ class NoteEditorActivity : AppCompatActivity() {
             n.title = title.text.toString()
             n.content = content.text.toString()
             n.date = date
+            n.lastModified = System.currentTimeMillis()
             intent.putExtra("NOTE", n)
             Log.d("NoteExists", n.toString())
         } else {
