@@ -62,3 +62,6 @@ To build and run the project, follow these steps:
 4.  **Run the application:** ▶️📱
     -   Select an emulator or connect a physical Android device.
     -   Click the "Run" button in Android Studio.
+  
+## 📽️ Video Demo
+[![Demo Short](https://img.youtube.com/vi/-xPejhJ7s-o/maxresdefault.jpg)](https://youtube.com/shorts/-xPejhJ7s-o?si=qpJPQCLMyXBV7hAT)
